@@ -1,9 +1,5 @@
-import 'package:agenda_management/common/screen_size/screen_size.dart';
 import 'package:agenda_management/common/theme/color_theme.dart';
 import 'package:agenda_management/features/view/screens/see.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

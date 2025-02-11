@@ -1,7 +1,6 @@
 import 'package:agenda_management/common/screen_size/screen_size.dart';
 import 'package:agenda_management/features/view/screens/first_screen.dart';
 import 'package:agenda_management/features/view/screens/second_screen.dart';
-import 'package:agenda_management/features/view/screens/third_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

@@ -3,7 +3,6 @@ import 'package:agenda_management/common/theme/color_theme.dart';
 import 'package:agenda_management/features/view/screens/third_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
 
 class AddAgendaScreen extends StatefulWidget {
   @override
