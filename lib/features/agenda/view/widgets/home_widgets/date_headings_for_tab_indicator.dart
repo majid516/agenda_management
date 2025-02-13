@@ -12,7 +12,7 @@ class DateHeadingsForTabIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(50.0),
+      preferredSize: Size.fromHeight(40.0),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         decoration: BoxDecoration(

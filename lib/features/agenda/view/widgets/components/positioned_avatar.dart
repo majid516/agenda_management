@@ -19,7 +19,7 @@ class PositionedAvatar extends StatelessWidget {
             color: Colors.blue,
             shape: BoxShape.circle,
           ),
-          child: Image.network(
+          child: Image.asset(
             imageUrl,
             fit: BoxFit.cover,
           )),

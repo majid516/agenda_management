@@ -19,15 +19,12 @@ class CommonAppBar extends StatelessWidget {
           size: 22,
         ),
       ),
-      title: Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: Text(
-          title,
-          style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: MyColors.whiteColor),
-        ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: MyColors.whiteColor),
       ),
       backgroundColor: MyColors.primayColor,
       centerTitle: true,

@@ -22,7 +22,7 @@ class MembersListWidget extends ConsumerWidget {
 
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(member.imageUrl),
+              backgroundImage: AssetImage(member.imageUrl),
             ),
             title: Text(member.name),
             trailing: isSelected ? Icon(Icons.check_circle, color: MyColors.primayColor) : Icon(Icons.circle_outlined,color: MyColors.primayColor,),

@@ -40,7 +40,7 @@ class _AgendaHomeScreenState extends ConsumerState<AgendaHomeScreen> {
       length: dates.length,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: Size.fromHeight(110),
           child: HomeScreenAppBar(dates: dates),
         ),
         backgroundColor: Colors.grey[200],

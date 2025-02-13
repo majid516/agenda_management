@@ -15,14 +15,14 @@ class HomeScreenAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.only(left: 10,right: 10, top: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
               'Agendas',
               style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 27,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
@@ -32,8 +32,11 @@ class HomeScreenAppBar extends StatelessWidget {
       ),
       backgroundColor: MyColors.primayColor,
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: DateHeadingsForTabIndicator(dates: dates),
+        preferredSize: Size.fromHeight(40.0),
+        child:dates.isEmpty ? Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('No Date Available',style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: MyColors.ternaryColor),),
+        ) : DateHeadingsForTabIndicator(dates: dates),
       ),
     );
   }
