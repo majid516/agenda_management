@@ -1,6 +1,6 @@
 import 'package:agenda_management/common/screen_size/screen_size.dart';
 import 'package:agenda_management/features/agenda/model/agenda_model.dart';
-import 'package:agenda_management/features/agenda/view/screens/first_screen.dart';
+import 'package:agenda_management/features/agenda/view/screens/home_screen.dart';
 import 'package:agenda_management/features/agenda/view/screens/add_agenda_screen.dart';
 import 'package:agenda_management/features/agenda/view/screens/select_members_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
     ScreenSize().initializeScreenSize(context);
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AgendaHomeScreen(),
+      home: AgendaHomeScreen(), 
       routes: {
         '/homeScreen' : (context)=> AgendaHomeScreen(),
         '/addTaskScreen' : (context)=> AddAgendaScreen(),

@@ -4,8 +4,7 @@ import 'package:agenda_management/features/agenda/model/agenda_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AgendaServices {
-  void addNewAgenda(AgendaModel agenda) async {
-    
+  Future<void> addNewAgenda(AgendaModel agenda) async {
     try {
       final agendaBox = await Hive.openBox<AgendaModel>('agendaBox');
       await agendaBox.put(agenda.id, agenda);
@@ -17,6 +16,7 @@ class AgendaServices {
   Future<List<AgendaModel>> getAllAgendas() async {
     try {
       final agendaBox = await Hive.openBox<AgendaModel>('agendaBox');
+      
       final agendaModelList = agendaBox.values.toList();
       return agendaModelList;
     } catch (e, s) {
