@@ -1,6 +1,6 @@
 import 'package:agenda_management/common/theme/color_theme.dart';
-import 'package:agenda_management/features/agenda/view/widgets/home_widgets/member_stack.dart';
-import 'package:agenda_management/features/agenda/view_model/agenda_controller.dart';
+import 'package:agenda_management/features/agenda/view/widgets/components/member_stack.dart';
+import 'package:agenda_management/features/agenda/view_model/agenda_state_model.dart';
 import 'package:flutter/material.dart';
 
 class AgendaListTileElements extends StatelessWidget {

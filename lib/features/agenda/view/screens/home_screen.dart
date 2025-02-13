@@ -1,7 +1,7 @@
-import 'dart:developer';
 import 'package:agenda_management/features/agenda/view/widgets/home_widgets/agenda_list.dart';
 import 'package:agenda_management/features/agenda/view/widgets/home_widgets/home_screen_app_bar.dart';
-import 'package:agenda_management/features/agenda/view_model/agenda_controller.dart';
+import 'package:agenda_management/features/agenda/view_model/agenda_notifier.dart';
+import 'package:agenda_management/features/agenda/view_model/agenda_state_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -50,7 +50,7 @@ class _AgendaHomeScreenState extends ConsumerState<AgendaHomeScreen> {
                 'No Agenda Scheduled',
                 style: TextStyle(fontSize: 20, color: Colors.grey.shade500),
               ))
-            : TabBarView( 
+            : TabBarView(
                 children: dates.map((date) {
                   return AgendaList(agendas: groupedAgendas[date]!);
                 }).toList(),

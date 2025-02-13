@@ -1,5 +1,5 @@
 import 'package:agenda_management/features/agenda/view/widgets/home_widgets/agenda_list_tile_elements.dart';
-import 'package:agenda_management/features/agenda/view_model/agenda_controller.dart';
+import 'package:agenda_management/features/agenda/view_model/agenda_state_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

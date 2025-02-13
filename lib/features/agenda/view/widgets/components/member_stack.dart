@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:agenda_management/common/theme/color_theme.dart';
-import 'package:agenda_management/features/agenda/view/widgets/home_widgets/positioned_avatar.dart';
+import 'package:agenda_management/features/agenda/view/widgets/components/positioned_avatar.dart';
 import 'package:flutter/material.dart';
 
 class MemberStack extends StatelessWidget {

@@ -1,5 +1,7 @@
 import 'package:agenda_management/common/components/custom_snackbar.dart';
-import 'package:agenda_management/features/agenda/view_model/agenda_controller.dart';
+import 'package:agenda_management/features/agenda/services/common_services.dart';
+import 'package:agenda_management/features/agenda/view_model/agenda_notifier.dart';
+import 'package:agenda_management/features/agenda/view_model/agenda_state_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,6 +11,7 @@ class TimeSelectionRawWidget extends StatelessWidget {
     required this.agendaState,
     required this.agendaNotifier,
   });
+
   final AgendaState agendaState;
   final AgendaNotifier agendaNotifier;
 
@@ -19,99 +22,45 @@ class TimeSelectionRawWidget extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onTap: () async {
-  DateTime now = DateTime.now();
-  DateTime selectedDate = agendaState.selectedDate;
-
-  DateTime dateTimeFromTimeOfDay(TimeOfDay timeOfDay) {
-    return DateTime(selectedDate.year, selectedDate.month, selectedDate.day, timeOfDay.hour, timeOfDay.minute);
-  }
-
-  TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay(hour: agendaState.startTime.hour, minute: agendaState.startTime.minute),
-  );
-
-  if (picked != null) {
-    DateTime pickedDateTime = dateTimeFromTimeOfDay(picked);
-
-    // Check if the selected date is today
-    bool isToday = selectedDate.year == now.year &&
-        selectedDate.month == now.month &&
-        selectedDate.day == now.day;
-
-    if (isToday) {
-      // If today, start time must be in the future
-      if (pickedDateTime.isBefore(now)) {
-        if (context.mounted) {
-          showCustomSnackBar(context, 'Start time must be in the future.', true);
-        }
-        return;
-      }
-    }
-onTap: () async {
-  DateTime now = DateTime.now();
-  DateTime selectedDate = agendaState.selectedDate;
-
-  DateTime dateTimeFromTimeOfDay(TimeOfDay timeOfDay) {
-    return DateTime(selectedDate.year, selectedDate.month, selectedDate.day, timeOfDay.hour, timeOfDay.minute);
-  }
-
-  TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay(hour: agendaState.startTime.hour, minute: agendaState.startTime.minute),
-  );
-
-  if (picked != null) {
-    DateTime pickedDateTime = dateTimeFromTimeOfDay(picked);
-
-    // Check if the selected date is today
-    bool isToday = selectedDate.year == now.year &&
-        selectedDate.month == now.month &&
-        selectedDate.day == now.day;
-
-    if (isToday) {
-      // If today, start time must be in the future
-      if (pickedDateTime.isBefore(now)) {
-        if (context.mounted) {
-          showCustomSnackBar(context, 'Start time must be in the future.', true);
-        }
-        return;
-      }
-    }
-
-    // Always check that start time is before end time
-    if (pickedDateTime.isAfter(agendaState.endTime)) {
-      if (context.mounted) {
-        showCustomSnackBar(context, 'Start time cannot be after the end time.', true);
-      }
-      return;
-    }
-
-    // Start time and end time cannot be the same
-    if (pickedDateTime.isAtSameMomentAs(agendaState.endTime)) {
-      if (context.mounted) {
-        showCustomSnackBar(context, 'Start time and end time cannot be the same.', true);
-      }
-      return;
-    }
-
-    agendaNotifier.updateStartTime(pickedDateTime);
-  }
-};
-
-  
-    // Start time and end time cannot be the same
-    if (pickedDateTime.isAtSameMomentAs(agendaState.endTime)) {
-      if (context.mounted) {
-        showCustomSnackBar(context, 'Start time and end time cannot be the same.', true);
-      }
-      return;
-    }
-
-    agendaNotifier.updateStartTime(pickedDateTime);
-  }
-}
-,
+              DateTime now = DateTime.now();
+              DateTime selectedDate = agendaState.selectedDate;
+              TimeOfDay? picked = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay(
+                  hour: agendaState.startTime.hour,
+                  minute: agendaState.startTime.minute,
+                ),
+              );
+              if (picked != null) {
+                DateTime pickedDateTime =
+                    dateTimeFromTimeOfDay(picked, selectedDate);
+                bool isToday = isSameDay(selectedDate, now);
+                if (isToday && pickedDateTime.isBefore(now)) {
+                  if (context.mounted) {
+                    showCustomSnackBar(
+                        context, 'Start time must be in the future.', true);
+                  }
+                  return;
+                }
+                if (onlyTime(pickedDateTime)
+                    .isAfter(onlyTime(agendaState.endTime))) {
+                  if (context.mounted) {
+                    showCustomSnackBar(
+                        context, 'Start time must be before end time.', true);
+                  }
+                  return;
+                }
+                if (onlyTime(pickedDateTime)
+                    .isAtSameMomentAs(onlyTime(agendaState.endTime))) {
+                  if (context.mounted) {
+                    showCustomSnackBar(context,
+                        'Start time and end time cannot be the same.', true);
+                  }
+                  return;
+                }
+                agendaNotifier.updateStartTime(pickedDateTime);
+              }
+            },
             child: AbsorbPointer(
               child: TextFormField(
                 decoration: InputDecoration(
@@ -129,60 +78,46 @@ onTap: () async {
         const SizedBox(width: 15),
         Expanded(
           child: GestureDetector(
-  onTap: () async {
-  DateTime now = DateTime.now();
-  DateTime selectedDate = agendaState.selectedDate;
-
-  DateTime dateTimeFromTimeOfDay(TimeOfDay timeOfDay) {
-    return DateTime(selectedDate.year, selectedDate.month, selectedDate.day, timeOfDay.hour, timeOfDay.minute);
-  }
-
-  TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay(hour: agendaState.endTime.hour, minute: agendaState.endTime.minute),
-  );
-
-  if (picked != null) {
-    DateTime pickedDateTime = dateTimeFromTimeOfDay(picked);
-
-    // Check if the selected date is today
-    bool isToday = selectedDate.year == now.year &&
-        selectedDate.month == now.month &&
-        selectedDate.day == now.day;
-
-    if (isToday) {
-      // If today, end time must be in the future
-      if (pickedDateTime.isBefore(now)) {
-        if (context.mounted) {
-          showCustomSnackBar(context, 'End time must be in the future.', true);
-        }
-        return;
-      }
-    }
-
-    // End time must be after the start time
-    if (pickedDateTime.isBefore(agendaState.startTime)) {
-      if (context.mounted) {
-        showCustomSnackBar(context, 'End time must be after the start time.', true);
-      }
-      return;
-    }
-
-    // Start time and end time cannot be the same
-    if (pickedDateTime.isAtSameMomentAs(agendaState.startTime)) {
-      if (context.mounted) {
-        showCustomSnackBar(context, 'Start time and end time cannot be the same.', true);
-      }
-      return;
-    }
-
-    agendaNotifier.updateEndTime(pickedDateTime);
-  }
-}
-
-
-,
-
+            onTap: () async {
+              DateTime now = DateTime.now();
+              DateTime selectedDate = agendaState.selectedDate;
+              TimeOfDay? picked = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay(
+                  hour: agendaState.endTime.hour,
+                  minute: agendaState.endTime.minute,
+                ),
+              );
+              if (picked != null) {
+                DateTime pickedDateTime =
+                    dateTimeFromTimeOfDay(picked, selectedDate);
+                bool isToday = isSameDay(selectedDate, now);
+                if (isToday && pickedDateTime.isBefore(now)) {
+                  if (context.mounted) {
+                    showCustomSnackBar(
+                        context, 'End time must be in the future.', true);
+                  }
+                  return;
+                }
+                if (onlyTime(pickedDateTime)
+                    .isBefore(onlyTime(agendaState.startTime))) {
+                  if (context.mounted) {
+                    showCustomSnackBar(
+                        context, 'End time must be after start time.', true);
+                  }
+                  return;
+                }
+                if (onlyTime(pickedDateTime)
+                    .isAtSameMomentAs(onlyTime(agendaState.startTime))) {
+                  if (context.mounted) {
+                    showCustomSnackBar(context,
+                        'Start time and end time cannot be the same.', true);
+                  }
+                  return;
+                }
+                agendaNotifier.updateEndTime(pickedDateTime);
+              }
+            },
             child: AbsorbPointer(
               child: TextFormField(
                 decoration: InputDecoration(
