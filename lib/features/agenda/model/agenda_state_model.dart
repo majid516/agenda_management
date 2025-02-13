@@ -1,12 +1,9 @@
-
-import 'package:flutter/material.dart';
-
 class AgendaState {
   final DateTime today;
   final DateTime selectedDate;
   final DateTime currentWeekStart;
-  final TimeOfDay startTime;
-  final TimeOfDay endTime;
+  final DateTime startTime;
+  final DateTime endTime;
   final String timeErrorMessage;
 
   AgendaState({
@@ -22,8 +19,8 @@ class AgendaState {
     DateTime? today,
     DateTime? selectedDate,
     DateTime? currentWeekStart,
-    TimeOfDay? startTime,
-    TimeOfDay? endTime,
+    DateTime? startTime,
+    DateTime? endTime,
     String? timeErrorMessage,
   }) {
     return AgendaState(

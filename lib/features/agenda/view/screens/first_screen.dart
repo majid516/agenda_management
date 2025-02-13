@@ -156,6 +156,8 @@
 
 import 'dart:developer';
 
+import 'package:agenda_management/common/theme/color_theme.dart';
+import 'package:agenda_management/features/agenda/view/screens/see.dart';
 import 'package:agenda_management/features/agenda/view_model/agenda_home_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -199,6 +201,10 @@ class AgendaHomeScreen extends ConsumerWidget {
 
     // Create a list of dates for tab creation.
     List<String> dates = groupedAgendas.keys.toList();
+  final dateFormat = DateFormat('d MMM'); // Matches your formatted date style
+
+dates.sort((a, b) => dateFormat.parse(a).compareTo(dateFormat.parse(b)));
+  log(dates.toString());
 
     return DefaultTabController(
       length: dates.length,
@@ -211,7 +217,7 @@ class AgendaHomeScreen extends ConsumerWidget {
               children: [
                 const Text(
                   'Agendas',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pushNamed('/addTaskScreen'),
@@ -219,7 +225,7 @@ class AgendaHomeScreen extends ConsumerWidget {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     height: 30,
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color:MyColors.secondaryColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -233,34 +239,69 @@ class AgendaHomeScreen extends ConsumerWidget {
               ],
             ),
           ),
-          backgroundColor: Colors.blue,
+          backgroundColor:MyColors.primayColor,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               decoration: BoxDecoration(
-                color: Colors.blueAccent,
+                color: MyColors.primayColor,
                 borderRadius: BorderRadius.circular(25.0),
               ),
-              child: TabBar(
+              child:TabBar(
                 dividerHeight: 0,
-                indicatorPadding: EdgeInsets.symmetric(vertical: 7, horizontal: -7),
+                indicatorPadding:
+                    EdgeInsets.symmetric(vertical: 7, horizontal: -7),
+
                 isScrollable: true,
+                // Custom pill-shaped indicator.
                 indicator: BoxDecoration(
                   borderRadius: BorderRadius.circular(12.0),
-                  color: Colors.white.withOpacity(0.3),
+                  color: MyColors.secondaryColor,
                 ),
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
-                tabs: dates.map((date) {
+                labelColor: MyColors.whiteColor,
+                unselectedLabelColor: MyColors.whiteColor,
+                tabs: dates.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  String date = entry.value;
                   return Tab(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      child: Text(date, style: TextStyle(fontSize: 16)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.calendar_today, size: 18),
+                          const SizedBox(width: 6),
+                          Text('Day ${index + 1} - $date'),
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
               ),
+              
+              //  TabBar(
+              //   dividerHeight: 0,
+              //   indicatorPadding: EdgeInsets.symmetric(vertical: 7, horizontal: -7),
+              //   isScrollable: true,
+              //   indicator: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(12.0),
+              //     color: Colors.white.withOpacity(0.3),
+              //   ),
+              //   labelColor: Colors.white,
+              //   unselectedLabelColor: Colors.white70,
+              //   tabs: dates.map((date) {
+              //     return Tab(
+              //       child: Padding(
+              //         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              //         child: Text(date, style: TextStyle(fontSize: 16)),
+              //       ),
+              //     );
+              //   }).toList(),
+              // ),
+
+
             ),
           ),
         ),
@@ -279,7 +320,7 @@ class AgendaHomeScreen extends ConsumerWidget {
 class AgendaList extends StatelessWidget {
   final List<Agenda> agendas;
 
-  const AgendaList({required this.agendas});
+  const AgendaList({super.key, required this.agendas});
 
   @override
   Widget build(BuildContext context) {
@@ -287,13 +328,9 @@ class AgendaList extends StatelessWidget {
       itemCount: agendas.length,
       itemBuilder: (context, index) {
         final agenda = agendas[index];
-        return Card(
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: ListTile(
-            title: Text(agenda.title, style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text("Time: ${agenda.time}"),
-            trailing: Icon(Icons.people),
-          ),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: AgendaCard(agendaItem: agenda, isLast: agendas.indexOf(agenda) == agendas.length),
         );
       },
     );

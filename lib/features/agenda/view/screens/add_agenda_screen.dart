@@ -18,10 +18,10 @@ class AddAgendaScreen extends ConsumerWidget {
     final agendaState = ref.watch(agendaProvider);
     final agendaNotifier = ref.read(agendaProvider.notifier);
 
- final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
     List<DateTime> weekDates = _getWeekDates(agendaState.currentWeekStart);
-     List<String> members = [];
+    List<String> members = [];
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -58,9 +58,9 @@ class AddAgendaScreen extends ConsumerWidget {
                   icon: const Icon(Icons.arrow_left, size: 32),
                   onPressed: _canNavigateToPreviousWeek(agendaState)
                       ? () {
-                          agendaNotifier.updateWeekStart(
-                              agendaState.currentWeekStart.subtract(
-                                  const Duration(days: 7)));
+                          agendaNotifier.updateWeekStart(agendaState
+                              .currentWeekStart
+                              .subtract(const Duration(days: 7)));
                         }
                       : null,
                 ),
@@ -72,14 +72,12 @@ class AddAgendaScreen extends ConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.arrow_right, size: 32),
                   onPressed: () {
-                    agendaNotifier.updateWeekStart(
-                        agendaState.currentWeekStart.add(
-                            const Duration(days: 7)));
+                    agendaNotifier.updateWeekStart(agendaState.currentWeekStart
+                        .add(const Duration(days: 7)));
                   },
                 ),
               ],
             ),
-         
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -92,9 +90,10 @@ class AddAgendaScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         DateTime date = weekDates[index];
                         bool isDisabled = date.isBefore(agendaState.today);
-                        bool isSelected = date.year == agendaState.selectedDate.year &&
-                            date.month == agendaState.selectedDate.month &&
-                            date.day == agendaState.selectedDate.day;
+                        bool isSelected =
+                            date.year == agendaState.selectedDate.year &&
+                                date.month == agendaState.selectedDate.month &&
+                                date.day == agendaState.selectedDate.day;
                         return GestureDetector(
                           onTap: isDisabled
                               ? null
@@ -149,49 +148,73 @@ class AddAgendaScreen extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () async {
-                      TimeOfDay? picked = await showTimePicker(
-                        context: context,
-                        initialTime: agendaState.startTime,
-                      );
-                      if (picked != null) {
-                        agendaNotifier.updateStartTime(picked);
-                      }
-                    },
-                    child: AbsorbPointer(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Start Time",
-                          hintText: agendaState.startTime.format(context),
-                          border: const OutlineInputBorder(),
-                        ),
-                        controller: TextEditingController(
-                            text: agendaState.startTime.format(context)),
+                    child: GestureDetector(
+                  onTap: () async {
+                    DateTime dateTimeFromTimeOfDay(TimeOfDay timeOfDay) {
+                      final now = DateTime.now();
+                      return DateTime(now.year, now.month, now.day,
+                          timeOfDay.hour, timeOfDay.minute);
+                    }
+
+                    TimeOfDay? picked = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(
+                          hour: agendaState.startTime.hour,
+                          minute: agendaState.startTime.minute),
+                    );
+                    if (picked != null) {
+                      
+                      agendaNotifier
+                          .updateStartTime(dateTimeFromTimeOfDay(picked));
+                    }
+                  },
+                  child: AbsorbPointer(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Start Time",
+                        hintText: DateFormat('hh:mm a').format(agendaState
+                            .startTime), // Format DateTime to 12-hour time (e.g., 5:30 PM)
+                        border: const OutlineInputBorder(),
+                      ),
+                      controller: TextEditingController(
+                        text: DateFormat('hh:mm a')
+                            .format(agendaState.startTime), // Format DateTime
                       ),
                     ),
                   ),
-                ),
+                )),
                 Expanded(
                   child: GestureDetector(
                     onTap: () async {
+                      DateTime dateTimeFromTimeOfDay(TimeOfDay timeOfDay) {
+                        final now = DateTime.now();
+                        return DateTime(now.year, now.month, now.day,
+                            timeOfDay.hour, timeOfDay.minute);
+                      }
+
                       TimeOfDay? picked = await showTimePicker(
-                        context: context,
-                        initialTime: agendaState.endTime,
-                      );
+                          context: context,
+                          initialTime: TimeOfDay(
+                            hour: agendaState.endTime.hour,
+                            minute: agendaState.endTime.minute,
+                          ));
                       if (picked != null) {
-                        agendaNotifier.updateEndTime(picked);
+                        agendaNotifier
+                            .updateEndTime(dateTimeFromTimeOfDay(picked));
                       }
                     },
                     child: AbsorbPointer(
                       child: TextFormField(
                         decoration: InputDecoration(
                           labelText: "End Time",
-                          hintText: agendaState.endTime.format(context),
+                          hintText: DateFormat('hh:mm a').format(agendaState
+                              .endTime), // Format DateTime to 12-hour time (e.g., 5:30 PM)
                           border: const OutlineInputBorder(),
                         ),
                         controller: TextEditingController(
-                            text: agendaState.endTime.format(context)),
+                          text: DateFormat('hh:mm a')
+                              .format(agendaState.endTime), // Format DateTime
+                        ),
                       ),
                     ),
                   ),
@@ -206,7 +229,7 @@ class AddAgendaScreen extends ConsumerWidget {
                   style: const TextStyle(color: Colors.red),
                 ),
               ),
-             CustomTextFormField(
+            CustomTextFormField(
               controller: descriptionController,
               maxLines: 1,
               hintText: 'Enter agenda Title',
@@ -228,29 +251,30 @@ class AddAgendaScreen extends ConsumerWidget {
                 Icons.arrow_forward_ios,
                 size: 17,
               ),
-              onTap: () async{
-               members = await Navigator.pushNamed(context,'/selectMembersScreen') as List<String>;
+              onTap: () async {
+                members =
+                    await Navigator.pushNamed(context, '/selectMembersScreen')
+                        as List<String>;
               },
             ),
-          
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomBigButton(
                   action: () async {
-
                     final customId = generateRandomNumber();
                     final agendaModel = AgendaModel(
                         id: customId.toString(),
                         date: DateFormat.yMd().format(agendaState.selectedDate),
-                        startingTime: agendaState.startTime.toString(),
-                        endingTime: agendaState.endTime.toString(),
+                        startingTime:
+                            DateFormat('hh:mm a').format(agendaState.startTime),
+                        endingTime:
+                            DateFormat('hh:mm a').format(agendaState.endTime),
                         title: titleController.text.toString(),
                         description: descriptionController.text.trim(),
                         members: members);
                     AgendaServices().addNewAgenda(agendaModel);
-                  final all =  await AgendaServices().getAllAgendas();
-                  log(all.toString());
+                    log(agendaModel.toString());
                     if (descriptionController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -276,15 +300,14 @@ class AddAgendaScreen extends ConsumerWidget {
             ),
           ],
         ),
-          
-      
       ),
     );
   }
 
   /// Helper functions
   bool _canNavigateToPreviousWeek(AgendaState state) {
-    DateTime previousWeekStart = state.currentWeekStart.subtract(Duration(days: 7));
+    DateTime previousWeekStart =
+        state.currentWeekStart.subtract(Duration(days: 7));
     DateTime previousWeekEnd = previousWeekStart.add(Duration(days: 6));
     return !previousWeekEnd.isBefore(state.today);
   }
@@ -302,28 +325,6 @@ class AddAgendaScreen extends ConsumerWidget {
     return List.generate(7, (index) => weekStart.add(Duration(days: index)));
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class CustomBigButton extends StatelessWidget {
   final VoidCallback action;

@@ -1,33 +1,42 @@
 import 'package:agenda_management/features/agenda/model/agenda_model.dart';
 import 'package:agenda_management/features/agenda/services/agenda_services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
-// Define a model for agenda items.
+
 class Agenda {
   final DateTime date;
   final String title;
   final String time;
+  final String startTime;
+  final String endTime;
   final List<String> members;
 
   Agenda({
+    required this.startTime,
+    required this.endTime,
     required this.date,
     required this.title,
     required this.time,
     required this.members,
   });
 
+  // Convert from AgendaModel (Hive) to Agenda
   factory Agenda.fromModel(AgendaModel model) {
     return Agenda(
-      date: DateFormat('M/d/yyyy').parse(model.date),
+      date: DateFormat('MM/dd/yyyy').parse(model.date),
       title: model.title,
       time: "${model.startingTime} - ${model.endingTime}",
+      startTime: model.startingTime,
+      endTime: model.endingTime,
       members: model.members,
     );
   }
 }
 
+// Agenda state class
 class AgendaState {
   final List<Agenda> agendas;
   final bool isLoading;

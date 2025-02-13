@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agenda_management/features/agenda/model/agenda_state_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +11,8 @@ class AgendaNotifier extends StateNotifier<AgendaState> {
             today: DateTime.now(),
             selectedDate: DateTime.now(),
             currentWeekStart: _getStartOfWeek(DateTime.now()),
-            startTime: TimeOfDay.now(),
-            endTime: _addMinutesToTimeOfDay(TimeOfDay.now(), 30),
+            startTime: DateTime.now(),
+            endTime: _addMinutesToDateTime(DateTime.now(), 30),
             timeErrorMessage: '',
           ),
         );
@@ -21,12 +23,13 @@ class AgendaNotifier extends StateNotifier<AgendaState> {
         .subtract(Duration(days: subtractDays));
   }
 
-  static TimeOfDay _addMinutesToTimeOfDay(TimeOfDay time, int minutesToAdd) {
-    int totalMinutes = time.hour * 60 + time.minute + minutesToAdd;
-    int newHour = totalMinutes ~/ 60;
-    int newMinute = totalMinutes % 60;
-    return TimeOfDay(hour: newHour % 24, minute: newMinute);
+  static DateTime _addMinutesToDateTime(DateTime time, int minutesToAdd) {
+    return time.add(Duration(minutes: minutesToAdd));
   }
+
+  // static DateTime _getFormattedDateTime(DateTime dateTime) {
+  //   return DateTime(dateTime.year, dateTime.month, dateTime.day, 0, 24); // 12:24 AM format
+  // }
 
   void selectDate(DateTime date) {
     state = state.copyWith(selectedDate: date);
@@ -36,19 +39,17 @@ class AgendaNotifier extends StateNotifier<AgendaState> {
     state = state.copyWith(currentWeekStart: newWeekStart);
   }
 
-  void updateStartTime(TimeOfDay newStartTime) {
+  void updateStartTime(DateTime newStartTime) {
     state = state.copyWith(startTime: newStartTime);
   }
 
-  void updateEndTime(TimeOfDay newEndTime) {
-    if (_timeToDouble(newEndTime) < _timeToDouble(state.startTime)) {
+  void updateEndTime(DateTime newEndTime) {
+    if (newEndTime.isBefore(state.startTime)) {
       state = state.copyWith(timeErrorMessage: "End Time cannot be earlier than Start Time");
     } else {
-      state = state.copyWith(timeErrorMessage: '', endTime: newEndTime);
+      state = state.copyWith(timeErrorMessage: '', endTime:newEndTime);
     }
   }
-
-  static double _timeToDouble(TimeOfDay tod) => tod.hour + tod.minute / 60.0;
 }
 
 final agendaProvider = StateNotifierProvider<AgendaNotifier, AgendaState>((ref) {
